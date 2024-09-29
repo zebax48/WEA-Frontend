@@ -561,6 +561,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
               )}
             </div>
             {/*Mostrar o ocultar Stripe*/}
+            
             {showStripe && isReview && <StripePayment email={formValues.email} totalAmount={Number(totalPrice.toFixed(2))} onSuccess={handleSubmitPayment} />}
 
             {/* Verificar cupón */}

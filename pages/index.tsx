@@ -27,6 +27,7 @@ interface HomeProps {
 
 export const getServerSideProps: GetServerSideProps = async () => {
     const res = await fetch('https://new-api.worldeventaccess.com/api/PublicEvents');
+    console.log(res);
     const events: Event[] = await res.json();
     return { props: { events } };
 };
