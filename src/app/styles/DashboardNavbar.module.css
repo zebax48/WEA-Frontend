@@ -1,0 +1,90 @@
+/* Contenedor del NavBar */
+.navbar-container {
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #f1f1f1;
+  padding: 6px 12px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Contenido del NavBar */
+.navbar-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Enlaces de navegación */
+.navbar-links {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+/* Estilo de los enlaces de navegación */
+.navbar-links a {
+  text-decoration: none;
+  color: #007bff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 10px;
+  transition: color 0.3s ease, background-color 0.3s ease;
+  border-radius: 3px;
+}
+
+/* Estilo del enlace en hover */
+.navbar-links a:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* Estilo del enlace activo */
+.navbar-links a.active {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+.menu-toggle {
+  display: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 6px;
+}
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .navbar-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background-color: #ffffff;
+    border-bottom: 1px solid #f1f1f1;
+    gap: 0;
+    overflow-y: auto;
+  }
+
+  .navbar-links.open {
+    display: flex;
+  }
+
+  .navbar-links a {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 0.9rem;
+  }
+}

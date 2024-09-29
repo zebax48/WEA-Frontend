@@ -1,0 +1,222 @@
+.eventDetailSection {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #0057af36;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.eventImage {
+  display: flex;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.imageContainer {
+  display: flex;
+  text-align: center;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.eventName {
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: 20px;
+  color: #0070f3;
+  text-align: center;
+}
+
+.description,
+.organizer,
+.date {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #555;
+}
+
+.dateValue {
+  font-size: 18px;
+  font-weight: bold;
+  color: #0070f3;
+}
+
+.organizerBold {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333333c5;
+}
+
+.regularPriceP {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  margin-top: 5px;
+  font-weight: lighter;
+  color: #009940d0;
+}
+
+.totalTicketPrice {
+  font-size: 20px;
+  font-weight: bold;
+  color: #03910fd3;
+}
+
+.section {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #0058af75;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.sectionButton {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #0058af75;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.section h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+}
+
+.formGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.formGroup label {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fafafa;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.formGroup label:hover {
+  background-color: #f0f0f0;
+  border-color: #0070f3;
+}
+
+.formGroup input[type="radio"] {
+  margin-right: 10px;
+  transform: scale(1.2);
+}
+
+.couponInput {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="email"],
+.formGroup input[type="tel"],
+.formGroup input[type="number"],
+.customSelect {
+  width: 100%;
+  margin-top: 1px;
+  margin-bottom: 10px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.formGroup input:focus,
+.couponInput:focus,
+.customSelect:focus {
+  border-color: #0070f3;
+  box-shadow: 0 0 5px rgba(0, 112, 243, 0.2);
+  outline: none;
+}
+
+.input,
+.select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.submitButton {
+  background-color: #18a899;
+  border-color: #1c796f;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 200px;
+  transition: background-color 0.3s;
+}
+
+.submitButton:hover {
+  background-color: #005bb5;
+}
+
+.previousButton:hover {
+  background-color: rgba(255, 0, 0, 0.685);
+}
+
+.highlight {
+  border: 2px solid red !important;
+  background-color: #005bb5;
+  margin-top: 40px;
+}
+.error {
+  color: red;
+  font-size: 0.8em;
+}
+
+@media (max-width: 600px) {
+  .eventDetailSection {
+    padding: 15px;
+  }
+
+  .regularPriceP {
+    margin-right: auto;
+  }
+
+  .imageContainer {
+    padding-left: 1px;
+    padding-right: 1px;
+  }
+
+  .eventName {
+    font-size: 22px;
+  }
+
+  .formGroup {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

@@ -1,0 +1,72 @@
+.eventsSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.eventsSection h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 32px;
+  color: #333;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.tabs button {
+  padding: 12px 24px;
+  background-color: #fff;
+  border: 2px solid #ddd;
+  border-radius: 30px;
+  font-size: 16px;
+  color: #333;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.tabs button:hover {
+  background-color: #0070f3;
+  color: #fff;
+}
+
+.tabs .activeTab {
+  background-color: #0070f3 !important;
+  color: #fff !important;
+  border-color: #0070f3;
+}
+
+.eventsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .tabs {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tabs button {
+    width: 100%;
+  }
+
+  .eventsSection h1 {
+    font-size: 28px;
+  }
+
+  .eventsContainer {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}

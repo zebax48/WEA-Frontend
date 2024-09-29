@@ -1,0 +1,79 @@
+.darkBackground {
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  transition: background-color 0.5s ease;
+}
+
+.container {
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: auto;
+}
+
+.h1 {
+  margin-bottom: 10px;
+  font-size: 1.5em;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: bold;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 6px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+
+.table th,
+.table td {
+  border: 1px solid #ddd;
+  padding: 6px;
+  text-align: left;
+  font-size: 0.85rem;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+.table th {
+  background-color: #6c757d;
+  color: #ffffff;
+  font-weight: bold;
+  border-bottom: 2px solid #5a6268;
+  font-size: 0.85rem;
+}
+
+.table tr:nth-child(even) td {
+  background-color: #f9f9f9;
+}
+
+.table tr:hover td {
+  background-color: #e9ecef;
+}
+
+.confirmButton {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.confirmButton:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+.confirmButton:active {
+  background-color: #00408b;
+  transform: translateY(0);
+}
