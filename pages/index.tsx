@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 import { useState } from 'react';
 import EventCard from '../src/app/components/EventCard';
 import styles from '../src/app/styles/Home.module.css';
+import { BASE_URL } from '@/app/components/config';
 
 interface Event {
   id: string;
@@ -26,7 +27,7 @@ interface HomeProps {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-    const res = await fetch('https://new-api.worldeventaccess.com/api/PublicEvents');
+    const res = await fetch(`${BASE_URL}/PublicEvents`);
     const events: Event[] = await res.json();
     return { props: { events } };
 };

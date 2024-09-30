@@ -51,7 +51,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ email, amount, onSuccess })
         return;
       }
 
-      const response = await fetch('http://new-api.worldeventaccess.com/api/publicTicket/processCardPayment', {
+      const response = await fetch('https://new-api.worldeventaccess.com/api/publicTicket/processCardPayment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ email, amount, onSuccess })
         setErrorMessage(`Payment error: ${data.error}`);
       }
     } catch (err) {
-      setErrorMessage('Sorry, a server error has occurred.');
+      setErrorMessage(`Sorry, a server error has occurred: ${err}`);
     } finally {
       setLoading(false);
     }

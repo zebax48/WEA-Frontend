@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import styles from '../../src/app/styles/EventDetail.module.css';
 import StripePayment from '@/app/components/StripePayment';
 import { v4 as uuidv4 } from 'uuid';
+import { BASE_URL } from '@/app/components/config';
 
 interface Event {
   id: string;
@@ -38,7 +39,7 @@ interface EventDetailProps {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.params!;
-  const res = await fetch(`https://new-api.worldeventaccess.com/api/PublicEvents/${id}`);
+  const res = await fetch(`${BASE_URL}/PublicEvents/${id}`);
   const event: Event = await res.json();
 
   return { props: { event } };

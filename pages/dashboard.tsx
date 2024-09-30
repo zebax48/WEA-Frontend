@@ -15,7 +15,7 @@ const Dashboard: React.FC = () => {
 
     const fetchEvents = async () => {
       try {
-        const response = await fetch('https://api.worldeventaccess.com/api/Event', {
+        const response = await fetch('https://new-api.worldeventaccess.com/api/Event', {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
             <div key={event.id} className={styles.eventCard}>
               <div className={styles.eventImage}>
                 <img
-                  src={`https://api.worldeventaccess.com/api/PublicEventLogo/${event.id}`}
+                  src={`https://new-api.worldeventaccess.com/api/PublicEventLogo/${event.id}`}
                   alt={event.name}
                 />
               </div>
