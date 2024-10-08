@@ -8,6 +8,7 @@ interface Event {
   name: string;
   description: string;
   eventStartDate: string;
+  eventEndDate: string;
   organizer: string;
   visitorPrice: number;
   regularTotalTickets: number;
@@ -23,12 +24,14 @@ interface Event {
 
 interface EventCardProps {
   event: Event;
+  activeTab: string;
 }
 
-const EventCard: React.FC<EventCardProps> = ({ event }) => {
+const EventCard: React.FC<EventCardProps> = ({ event, activeTab }) => {
   const router = useRouter();
   const eventImageUrl = `https://new-api.worldeventaccess.com/api/PublicEventLogo/${event.id}`;
   const formattedDate = new Date(event.eventStartDate).toLocaleDateString();
+  const formattedEndDate = new Date(event.eventEndDate).toLocaleDateString();
   const [isImageLoaded, setIsImageLoaded] = useState<boolean>(false);
 
   const handleRegisterClick = () => {
@@ -59,10 +62,22 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
     price = 0;
   }
 
+  // Verificar si ya se vendieron todos los tickets
+  const isSoldOut = (event: Event) => {
+    return event.earlyBirdTotalTickets === 0 && event.regularTotalTickets === 0 && event.lastMinuteTotalTickets === 0;
+  };
 
   const discount = isEarlyBirdAvailable && event.visitorPrice > 0
     ? Math.round((1 - event.earlyBirdPrice / event.visitorPrice) * 100)
     : 0;
+
+  let buttonText = price > 0 ? `$${price}` : 'Sold Out';
+  let buttonDisabled = false;
+
+  if (activeTab === 'Latest') {
+    buttonText = 'Out of Date';
+    buttonDisabled = true;
+  }
 
   return (
     <div className={styles.eventCard}>
@@ -89,10 +104,15 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <p className={styles.date}>
           Start date: <span className={styles.dateValue}>{formattedDate}</span>
         </p>
+        <p className={styles.date}>
+          End date: <span className={styles.dateValue}>&nbsp;{formattedEndDate}</span>
+        </p>
       </div>
-      <button className={styles.registerButton} onClick={handleRegisterClick}>
-        {price > 0 ? `$${price}` : 'Sold Out'}
-        {discount > 0 && <span className={styles.discount}> ({discount}% off)</span>}
+      <button className={styles.registerButton} onClick={handleRegisterClick} disabled={isSoldOut(event) || buttonDisabled}>
+        {buttonText}
+        {!buttonDisabled && discount > 0 && (
+          <span className={styles.discount}> ({discount}% off)</span>
+        )}
       </button>
     </div>
   );

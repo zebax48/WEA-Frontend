@@ -3,6 +3,7 @@ import styles from '../src/app/styles/Tickets.module.css';
 import { useRouter } from 'next/router';
 import Navbar from '@/app/components/Navbar';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
+import { BASE_URL } from '@/app/components/config';
 
 interface Ticket {
   paymentRecordId?: string;
@@ -12,6 +13,7 @@ interface Ticket {
   firstName: string;
   lastName: string;
   email: string;
+  credentials: string;
   event: {
     name: string;
   };
@@ -46,7 +48,10 @@ const Dashboard = () => {
         }
 
         const data = await response.json();
-        setTickets(data); // Sin filtrar por tipo de pago
+        
+        // Filtrar el campo "credentials" y establecer tickets
+        const filteredTickets = data.map(({ credentials, ...ticket }: Ticket) => ticket);
+        setTickets(filteredTickets); // Solo se guardan los tickets sin "credentials"
       } catch (error) {
         if (error instanceof Error) {
           console.error('Error fetching tickets:', error.message);
@@ -101,7 +106,7 @@ const Dashboard = () => {
                 <td>{ticket.lastName}</td>
                 <td>{ticket.email}</td>
                 <td>{ticket.event.name}</td>
-                <td>{ticket.ticketStatus = 1 ? 'Active' : 'Inactive'}</td>
+                <td>{ticket.ticketStatus === '1' ? 'Active' : 'Inactive'}</td> {/* Corrigido para verificar el estado */}
                 <td>
                   <button
                     className={styles.confirmButton}

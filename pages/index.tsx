@@ -9,6 +9,7 @@ interface Event {
   name: string;
   description: string;
   eventStartDate: string;
+  eventEndDate: string;
   organizer: string;
   visitorPrice: number;
   regularTotalTickets: number;
@@ -27,7 +28,7 @@ interface HomeProps {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-    const res = await fetch(`${BASE_URL}/PublicEvents`);
+    const res = await fetch(`${BASE_URL}/PublicEvents?Status=1`); //?Status=1
     const events: Event[] = await res.json();
     return { props: { events } };
 };
@@ -39,7 +40,7 @@ const Home: React.FC<HomeProps> = ({ events }) => {
 
   // Filtrar eventos por categoría
   const filteredEvents = events.filter((event) => {
-    const eventDate = new Date(event.eventStartDate);
+    const eventDate = new Date(event.eventEndDate);
 
     if (activeTab === 'Latest') {
       // Mostrar eventos recientes (eventos dentro de los últimos 7 días)
@@ -90,7 +91,7 @@ const Home: React.FC<HomeProps> = ({ events }) => {
 
       <div className={styles.cardContainer}>
         {sortedEvents.length > 0 ? (
-          sortedEvents.map((event) => <EventCard key={event.id} event={event} />)
+          sortedEvents.map((event) => <EventCard key={event.id} event={event} activeTab={activeTab} />)
         ) : (
           <p>No events found for this category.</p>
         )}

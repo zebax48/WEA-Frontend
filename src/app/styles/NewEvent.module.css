@@ -98,7 +98,7 @@
 
 .formGroup {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 10px;
 }
 
@@ -135,11 +135,22 @@
   margin-top: 10px;
 }
 
+.input[type="number"]::-webkit-outer-spin-button,
+.input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Deshabilitar las flechas en Firefox */
+.input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 .formGroup input[type="text"],
 .formGroup input[type="email"],
 .formGroup input[type="tel"],
 .formGroup input[type="number"],
-.customSelect {
+.formGroup input[type="datetime-local"] .customSelect {
   width: 100%;
   margin-top: 1px;
   margin-bottom: 10px;
@@ -150,6 +161,8 @@
   background-color: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: border-color 0.3s, box-shadow 0.3s;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
 }
 
 .formGroup input:focus,
@@ -192,6 +205,7 @@
   background-color: #005bb5;
   margin-top: 40px;
 }
+
 .error {
   color: red;
   font-size: 0.8em;
@@ -250,7 +264,8 @@
     width: 100%;
   }
 
-  #photo, #canvas {
+  #photo,
+  #canvas {
     width: 100%;
   }
 }

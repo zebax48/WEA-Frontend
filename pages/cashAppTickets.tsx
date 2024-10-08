@@ -36,7 +36,7 @@ const Dashboard = () => {
 
     const fetchTickets = async () => {
       try {
-        const response = await fetch('https://api.worldeventaccess.com/api/Ticket?TicketStatus=2', {
+        const response = await fetch('https://new-api.worldeventaccess.com/api/Ticket?TicketStatus=2', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -72,7 +72,7 @@ const Dashboard = () => {
       if (isConfirmed) {
         setConfirming(true);
         try {
-          const response = await fetch('https://api.worldeventaccess.com/api/Ticket/ConfirmTicketsGroup', {
+          const response = await fetch('https://new-api.worldeventaccess.com/api/Ticket/ConfirmTicketsGroup', {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,

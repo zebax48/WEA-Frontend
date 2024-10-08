@@ -4,6 +4,8 @@ import styles from '../../src/app/styles/EventDetail.module.css';
 import StripePayment from '@/app/components/StripePayment';
 import { v4 as uuidv4 } from 'uuid';
 import { BASE_URL } from '@/app/components/config';
+import { useRouter}  from 'next/router';
+import * as tracking from 'tracking';
 
 interface Event {
   id: string;
@@ -31,6 +33,17 @@ interface Event {
   natCashFee: number;
   pseFee: number;
   soldTickets: number;
+  zellePercentage: number;
+  cashPercentage: number;
+  creditCardPercentage: number;
+  moncashPercentage: number;
+  natCashPercentage: number;
+  psePercentage: number;
+  zelleAccount: string;
+  cashAppAccount: string;
+  moncashAccount: string;
+  natCashAccount: string;
+  pseAccount: string;
 }
 
 interface EventDetailProps {
@@ -48,12 +61,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
   const formattedDate = new Date(event.eventStartDate).toLocaleDateString();
   const roomOptions = event.rooms.split(',');
-
+  const router = useRouter();
   const [guests, setGuests] = useState(0);
   const [totalTickets, setTotalTickets] = useState(0);
   const [parkingPrice, setParkingPrice] = useState(0);
   const [transactionFee, setTransactionFee] = useState(0);
   const [coupon, setCoupon] = useState('');
+  const [discount, setDiscount] = useState('');
   const [selectedRoom, setSelectedRoom] = useState<string>('');
   const [totalPrice, setTotalPrice] = useState(0);
   const [pricePerPerson, setPricePerPerson] = useState(0);
@@ -64,7 +78,13 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
   const [paymentName, setPaymentName] = useState('');
   const [isReview, setIsReview] = useState(false);
   const [priceMethod, setPriceMethod] = useState('');
-  const [parkingMehod, setParkingMethod] = useState('');
+  const [payPercentage, setPayPercentage] = useState(0);
+  const [payAccount, setPayAccount] = useState('');
+  const [totalFee, setTotalFee] = useState(0);
+  const [parkingMethod, setParkingMethod] = useState('');
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [photoMethod, setPhotoMethod] = useState<string | null>(null);
+  const [tracking, setTracking] = useState<any>(null);
   const [highlightedFields, setHighlightedFields] = useState({
     firstName: false,
     lastName: false,
@@ -97,15 +117,54 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
     ticketPrice();
   }, [])
 
+  useEffect(() => {
+    // Esta función solo se ejecutará en el lado del cliente
+    const startCamera = () => {
+      const video = document.getElementById('video') as HTMLVideoElement;
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+          video.srcObject = stream;
+          video.style.display = 'block';
+
+          /* Iniciar el tracker de rostro
+          const tracker = new tracking.ObjectTracker('face');
+          tracker.setInitialScale(4);
+          tracker.setStepSize(2);
+          tracker.setEdgesDensity(0.1);
+
+          tracking.track('#video', tracker, { camera: true });
+
+          tracker.on('track', (event: any) => {
+            if (event.data.length === 0) {
+              console.log("No face detected");
+            } else {
+              console.log("Face detected");
+            }
+          });
+          */
+        })
+        .catch(err => console.error("Error accessing camera: ", err));
+    };
+
+    if (photoMethod === 'camera') {
+      startCamera();
+    }
+  }, [photoMethod]);
+
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCountry(e.target.value);
+    setPayAccount('');
+    setPaymentMethod('');
+    setShowStripe(false);
   };
 
   const calculateTotal = () => {
     const ticketPrice = (guests + 1) * pricePerPerson;
-    const total = ticketPrice + parkingPrice + ((ticketPrice + parkingPrice) * transactionFee / 100);
+    const acum = ticketPrice + parkingPrice;
+    const feeTotal = transactionFee + ((acum) * payPercentage / 100);
+    setTotalFee(feeTotal);
     setTotalTickets(ticketPrice);
-    setTotalPrice(total);
+    setTotalPrice(feeTotal + acum);
   };
 
   const handleGuestsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -147,6 +206,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
       }
       const data = await res.json();
       if (data === true) {
+        setDiscount('100%');
         alert('Coupon is valid');
         handleSubmitPayment();
       } else {
@@ -164,24 +224,38 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
     setPaymentName('');
     if (method === 'card') {
       setTransactionFee(event.creditCardFee);
+      setPayAccount('');
+      setPayPercentage(event.creditCardPercentage)
       setShowStripe(true);
     } else if (method === 'zelle') {
       setTransactionFee(event.zelleFee);
+      setPayAccount(event.zelleAccount);
+      setPayPercentage(event.zellePercentage);
       setShowStripe(false);
     } else if (method === 'cash') {
       setTransactionFee(event.cashFee);
+      setPayAccount(event.cashAppAccount);
+      setPayPercentage(event.cashPercentage);
       setShowStripe(false);
     } else if (method === 'moncash') {
       setTransactionFee(event.moncashFee);
+      setPayAccount(event.moncashAccount);
+      setPayPercentage(event.moncashPercentage);
       setShowStripe(false);
     } else if (method === 'natCash') {
       setTransactionFee(event.natCashFee);
+      setPayAccount(event.natCashAccount);
+      setPayPercentage(event.natCashPercentage);
       setShowStripe(false);
     } else if (method === 'pse') {
       setTransactionFee(event.pseFee);
+      setPayAccount(event.pseAccount);
+      setPayPercentage(event.psePercentage);
       setShowStripe(false);
     } else if (method === 'coupon') {
       setTransactionFee(0);
+      setPayAccount('');
+      setPayPercentage(0);
       setShowStripe(false);
     }
   };
@@ -270,12 +344,13 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
       firstName: formValues.firstName,
       lastName: formValues.lastName,
       email: formValues.email,
+      picture: photo,
       eventId: event.id,
       rooms: selectedRoom,
       dates: event.eventStartDate,
       paymentRecordId: coupon,
       paymentMethod: paymentMethod,
-      [paymentMethod + 'Account']: paymentAccount,
+      [paymentMethod + 'Account']: payAccount,
       [paymentMethod + 'Name']: paymentName,
       groupId: formValues.groupId,
       groupQty: guests + 1,
@@ -283,10 +358,10 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
       ticketPrice: pricePerPerson,
       totalAmount: totalPrice.toFixed(2),
       groupMain: true,
-      parkingMehod: parkingMehod
+      parkingMethod: parkingMethod
     };
     try {
-      const res = await fetch('https://new-api.worldeventaccess.com/api/publicTicket/publicTicketBulk', {
+      const res = await fetch(`${BASE_URL}/publicTicket/publicTicketBulk`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify([payload])
@@ -297,7 +372,9 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
       }
 
       const data = await res.json();
+      //console.log({payload})
       alert('Registration successful');
+      router.push('/');
     } catch (error) {
       console.error('Error submitting form:', error);
       alert('An error occurred. Please try again.');
@@ -346,6 +423,96 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
       }));
     }
   };
+
+  const startCamera = () => {
+    const video = document.getElementById('video') as HTMLVideoElement;
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+        video.style.display = 'block';
+
+        /* Iniciar el tracker de rostro
+        const tracker = new tracking.ObjectTracker('face');
+        tracker.setInitialScale(4);
+        tracker.setStepSize(2);
+        tracker.setEdgesDensity(0.1);
+
+        tracking.track('#video', tracker, { camera: true });
+
+        tracker.on('track', (event: any) => {
+          if (event.data.length === 0) {
+            console.log("No face detected");
+          } else {
+            console.log("Face detected");
+          }
+        });
+        */
+      })
+      .catch(err => console.error("Error accessing camera: ", err));
+  };
+
+  const capturePhoto = () => {
+    const video = document.getElementById('video') as HTMLVideoElement;
+    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    const context = canvas.getContext('2d');
+
+    context?.drawImage(video, 0, 0, 320, 240);
+    const data = canvas.toDataURL('image/png');
+    setPhoto(data);
+
+    const stream = video.srcObject as MediaStream;
+    stream.getTracks().forEach(track => track.stop());
+    video.style.display = 'none';
+    canvas.style.display = 'block'; // Mostrar la imagen capturada
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const img = new Image();
+        img.src = reader.result as string;
+
+        img.onload = () => {
+          // Crear un canvas temporal para analizar la imagen
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const context = canvas.getContext('2d');
+          context?.drawImage(img, 0, 0);
+
+          /* Usar tracking.js para detectar el rostro
+          const tracker = new tracking.ObjectTracker('face');
+          tracking.track(canvas, tracker);
+
+          tracker.on('track', (event: any) => {
+            if (event.data.length === 0) {
+              alert("No face detected in the uploaded image! Please upload an image with a face.");
+            } else {
+              // Si se detecta un rostro, mostrar la imagen
+              setPhoto(reader.result as string);
+            }
+          });
+          */
+          setPhoto(reader.result as string);
+        };
+      };
+      reader.readAsDataURL(file);
+      
+    }
+  };
+
+  const handlePhotoMethodChange = (method: 'camera' | 'upload') => {
+    setPhotoMethod(method);
+
+    if (method === 'camera') {
+      startCamera();
+    }
+  };
+
+  const isButtonDisabled = !paymentName;
 
   return (
     <section className={styles.eventDetailSection}>
@@ -468,7 +635,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                     <input type="radio" name="parking" value="free" onChange={() => {
                       setParkingPrice(0);
                       setParkingMethod('free');
-                      }} /> Free Parking
+                    }} /> Free Parking
                   </label>
                 )}
                 {event.hasStandardParking && (
@@ -476,7 +643,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                     <input type="radio" name="parking" value="standard" onChange={() => {
                       setParkingPrice(event.standardParkingPrice);
                       setParkingMethod('standard');
-                      }} /> Standard Parking: ${event.standardParkingPrice}
+                    }} /> Standard Parking: ${event.standardParkingPrice}
                   </label>
                 )}
                 {event.hasVIPParking && (
@@ -484,9 +651,15 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                     <input type="radio" name="parking" value="valet" onChange={() => {
                       setParkingPrice(event.vipParkingPrice);
                       setParkingMethod('valet');
-                      }}/> VIP Parking: ${event.vipParkingPrice}
+                    }} /> VIP Parking: ${event.vipParkingPrice}
                   </label>
                 )}
+                <label>
+                    <input type="radio" name="parking" value="none" onChange={() => {
+                      setParkingPrice(0);
+                      setParkingMethod('');
+                    }} /> None
+                  </label>
               </div>
             </div>
 
@@ -525,6 +698,42 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                 />
               </div>
             </div>
+            {/* Photo method selection */}
+            <div className={styles.section}>
+              <h3>How would you like to add your photo?</h3>
+              <div className={styles.photoForm}>
+                <div className={styles.photoMethodSelection}>
+                  <button
+                    type="button"
+                    onClick={() => handlePhotoMethodChange('camera')}
+                    className={`${styles.photoMethodButton} ${photoMethod === 'camera' ? styles.active : ''}`}
+                  >
+                    Camera
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handlePhotoMethodChange('upload')}
+                    className={`${styles.photoMethodButton} ${photoMethod === 'upload' ? styles.active : ''}`}
+                  >
+                    Upload Image
+                  </button>
+                </div>
+              </div>
+              {/* Mostrar cámara o sección de subida según selección */}
+              {photoMethod === 'camera' && (
+                  <div className={styles.photoForm}>
+                    <video id="video" width="320" height="240" autoPlay style={{ display: 'block' }}></video>
+                    <canvas id="canvas" width="320" height="240" style={{ display: 'none' }}></canvas>
+                    <button type="button" onClick={capturePhoto} className={styles.photoButton}>Capture Photo</button>
+                  </div>
+              )}
+              {photoMethod === 'upload' && (
+                  <div className={styles.photoForm}>
+                    <input type="file" accept="image/*" id="upload-photo" onChange={handlePhotoUpload} className={styles.uploadInput} />
+                    {photo && <img src={photo} alt="Uploaded Preview" className={styles.photoPreview} />}
+                  </div>
+              )}
+            </div>
           </>
         ) : (
           <>
@@ -542,9 +751,9 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
             <div className={styles.section}>
               <h3>Ticket Details:</h3>
               <p>Total Ticket: ${totalTickets.toFixed(2)}</p>
-              <p>Discount: -</p>
+              <p>Discount: {discount}</p>
               <p>Parking: ${parkingPrice.toFixed(2)}</p>
-              <p>Transaction Fee: {transactionFee ? transactionFee.toFixed(2) : '0.00'}%</p>
+              <p>Transaction Fee: ${totalFee ? totalFee.toFixed(2) : '0.00'}</p>
               <p>Your total price is: <span className={styles.totalTicketPrice}>${totalPrice.toFixed(2)}</span></p>
             </div>
 
@@ -562,7 +771,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
               )}
             </div>
             {/*Mostrar o ocultar Stripe*/}
-            
+
             {showStripe && isReview && <StripePayment email={formValues.email} totalAmount={Number(totalPrice.toFixed(2))} onSuccess={handleSubmitPayment} />}
 
             {/* Verificar cupón */}
@@ -591,10 +800,11 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                     type="text"
                     id={`${paymentMethod}Account`}
                     name={`${paymentMethod}Account`}
-                    value={paymentAccount}
+                    value={payAccount}
+                    disabled
                     onChange={(e) => {
                       setPaymentAccount(e.target.value);
-                      setPaymentMethod(parkingMehod);
+                      setPaymentMethod(paymentMethod);
                     }}
                   />
                 </div>
@@ -608,6 +818,11 @@ const EventDetail: React.FC<EventDetailProps> = ({ event }) => {
                     onChange={(e) => setPaymentName(e.target.value)}
                   />
                 </div>
+                {!isButtonDisabled && (
+                  <button className={styles.submitButton} onClick={handleSubmitPayment}>
+                    Submit Payment
+                  </button>
+                )}
               </div>
             )}
           </>

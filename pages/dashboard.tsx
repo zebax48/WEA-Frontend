@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../src/app/styles/Dashboard.module.css';
 import Navbar from '@/app/components/Navbar';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import LoadingSpinner from '../src/app/components/LoadingSpinner';
 
@@ -55,9 +56,11 @@ const Dashboard: React.FC = () => {
           return (
             <div key={event.id} className={styles.eventCard}>
               <div className={styles.eventImage}>
-                <img
+                <Image
                   src={`https://new-api.worldeventaccess.com/api/PublicEventLogo/${event.id}`}
                   alt={event.name}
+                  width={150} // Especifica un ancho
+                  height={150} // Especifica una altura
                 />
               </div>
               <div className={styles.eventDetails}>
@@ -65,7 +68,7 @@ const Dashboard: React.FC = () => {
                 <p className={styles.organizerBold}>Organizer: <span className={styles.date}>{event.organizer}</span></p>
                 <div className={styles.progressContainer}>
                   <p className={styles.date}>Start date: <span className={styles.dateValue}>{new Date(event.eventStartDate).toLocaleDateString()}</span></p>
-                  <p className={styles.percent}>{totalTicketsSold}/{event.capacity} | {percentageSold}% </p>
+                  <p className={styles.percent}>{totalTicketsSold}/{event.capacity} | {percentageSold.toFixed(2)}% </p>
                 </div>
                 <div className={styles.progressBar}>
                   <div className={styles.progress} style={{ width: `${percentageSold}%` }}></div>

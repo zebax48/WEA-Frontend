@@ -35,7 +35,7 @@ const Navbar = () => {
         <div className={`${styles['navbar-links']} ${menuOpen ? styles['open'] : ''}`}>
           <a onClick={() => handleNavigation('/dashboard')} className={router.pathname === '/dashboard' ? styles['active'] : ''}>Dashboard</a>
           <a onClick={() => handleNavigation('/usersTable')} className={router.pathname === '/users' ? styles['active'] : ''}>Users</a>
-          <a onClick={() => handleNavigation('/events')} className={router.pathname === '/events' ? styles['active'] : ''}>Events</a>
+          <a onClick={() => handleNavigation('/eventManager')} className={router.pathname === '/eventManager' ? styles['active'] : ''}>Events</a>
           <a onClick={() => handleNavigation('/coupons')} className={router.pathname === '/coupons' ? styles['active'] : ''}>Coupons</a>
           <a onClick={() => handleNavigation('/tickets')} className={router.pathname === '/tickets' ? styles['active'] : ''}>Tickets</a>
           <a onClick={() => handleNavigation('/zelleTickets')} className={router.pathname === '/zelleTickets' ? styles['active'] : ''}>Zelle Tickets</a>
